@@ -13,7 +13,7 @@ global class LeadRestApi {
             }
 
         }catch(NullPointerException e){
-            System.debug('The following exception has occurred: ' + e.getMessage());
+            System.debug('The following exception has occurred: ' + e.getMessage());// Для ошибок выставляем соответствующий уровень дебага
         }
         return getLead;
     }
@@ -23,7 +23,7 @@ global class LeadRestApi {
                        
         Lead targetLead = LeadRESTHelper();
         
-        List<String> validSubjects = new List<String>();
+        List<String> validSubjects = new List<String>();// все что ниже можно добавить в константу или конструктор листа
         validSubjects.add('Call');
         validSubjects.add('Email');
         validSubjects.add('Other');
@@ -38,13 +38,13 @@ global class LeadRestApi {
             if (targetLead!=null) {
                 Task newTask;
                 if (validSubjects.contains(subj)) {
-                    newTask = new Task(Subject = subj,
+                    newTask = new Task(Subject = subj,// Читай задание, описание таски где?
                                     Status = 'Not Started',
                                     WhoID = targetLead.Id, 
                                     OwnerId = targetLead.OwnerId);
                 }
                 else {
-                    newTask = new Task(Status = 'Not Started',
+                    newTask = new Task(Status = 'Not Started',// Зачем нам пустая таска?
                                     WhoID = targetLead.Id, 
                                     OwnerId = targetLead.OwnerId);
                 }
@@ -55,25 +55,25 @@ global class LeadRestApi {
             }
         } catch (DmlException e) {
             System.debug('The following exception has occurred: ' + e.getMessage());
-        }
+        }//Почему ничего не возвращаем как результат? Как понять что реквест прошел как нужно?
     }
 
-    public static Lead LeadRESTHelper() {
+    public static Lead LeadRESTHelper() {//Название ничего не говорит
 
-        Lead returnLead;
+        Lead returnLead;//нэйминг
         try{  
             Map<String, Object> parMap = getRequestBody();
-            String leadId = '%' + parMap.get('id').toString() + '%';
-            String leadEmail = '%' + parMap.get('email').toString() + '%';
+            String leadId = '%' + parMap.get('id').toString() + '%';//упадет
+            String leadEmail = '%' + parMap.get('email').toString() + '%';//упадет
 
-            if(leadId != null && leadId.length() == 20){
+            if(leadId != null && leadId.length() == 20){//Условие не имеет смысла так как согласно твоему выражени. выше переменная не может быть null
                 returnLead = [SELECT Id, Name, OwnerId,	Address, MobilePhone, Status
                         FROM Lead
                         WHERE Id = :leadId
                         LIMIT 1];
                 return returnLead;
             }
-            else if(leadEmail != null && leadEmail.contains('@')){
+            else if(leadEmail != null && leadEmail.contains('@')){//Условие не имеет смысла так как согласно твоему выражени. выше переменная не может быть null
                 returnLead = [SELECT Id, Name, OwnerId,	Address, MobilePhone, Status
                         FROM Lead
                         WHERE Email = :leadEmail
